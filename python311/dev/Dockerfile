@@ -17,13 +17,21 @@ WORKDIR /code/_install
 ENV LANG C.UTF-8
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -yq
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq curl libbz2-dev libffi-dev libssl-dev wget xz-utils unzip build-essential
-RUN curl "https://nodejs.org/dist/v20.10.0/node-v20.10.0-linux-x64.tar.xz" -o nodejs.tar.xz
+RUN if [ "$(uname -m)" = "aarch64" ]; then \
+		curl "https://nodejs.org/dist/v20.10.0/node-v20.10.0-linux-arm64.tar.xz" -o nodejs.tar.xz ;\
+	else \
+		curl "https://nodejs.org/dist/v20.10.0/node-v20.10.0-linux-x64.tar.xz" -o nodejs.tar.xz ;\
+	fi	
 RUN xz -d nodejs.tar.xz
 RUN tar xvf nodejs.tar -C /usr/local --strip-components=1
 RUN rm nodejs.tar
 
 ENV DEBIAN_FRONTEND=noninteractive 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN if [ "$(uname -m)" = "aarch64" ]; then \
+		curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"; \
+	else \
+		curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" ; \
+	fi	
 RUN unzip awscliv2.zip
 RUN ./aws/install
 RUN rm -rf aws
