@@ -11,7 +11,9 @@ ENV PYTHONPATH /code/LinkageServices:/code/common_resources:
 
 
 # RUN mkdir /code
-WORKDIR /code
+RUN mkdir -p /code/_install
+WORKDIR /code/_install
+
 ENV LANG C.UTF-8
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -yq
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq curl libbz2-dev libffi-dev libssl-dev wget xz-utils unzip build-essential
@@ -137,16 +139,30 @@ RUN set -eux; \
 	pip --version
 
 COPY requirements.txt /code/
-# RUN DEBIAN_FRONTEND=noninteractive apt-get update 
+
+WORKDIR /code
 RUN pip install -r requirements.txt
 RUN DEBIAN_FRONTEND=noninteractive apt-get install git -yq
-# COPY ./ /code/
+
+
+
 
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
 RUN chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null 
 RUN  DEBIAN_FRONTEND=noninteractive apt update -yq
 RUN DEBIAN_FRONTEND=noninteractive apt install gh postgresql -yq
+RUN DEBIAN_FRONTEND=noninteractive apt install bzip2 -yq
+RUN locale-gen en_US.UTF-8 
+COPY pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+
+
+
+
+COPY devdb.sql.bz2 /code/_install
+RUN chown postgres:postgres /etc/postgresql/14/main/pg_hba.conf
+
+
 
 # EXPOSE 8080
 # CMD ["bash", "run.sh"]
