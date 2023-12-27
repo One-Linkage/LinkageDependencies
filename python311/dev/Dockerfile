@@ -163,12 +163,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt install gh postgresql -yq
 RUN DEBIAN_FRONTEND=noninteractive apt install bzip2 -yq
 RUN locale-gen en_US.UTF-8 
 COPY pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
-
-
-
-
-COPY devdb.sql.bz2 /code/_install
 RUN chown postgres:postgres /etc/postgresql/14/main/pg_hba.conf
+
+
+
+# COPY devdb.sql.bz2 /code/_install
 
 
 
