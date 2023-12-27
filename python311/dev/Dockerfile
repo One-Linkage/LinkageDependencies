@@ -160,7 +160,7 @@ RUN chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null 
 RUN  DEBIAN_FRONTEND=noninteractive apt update -yq
 RUN DEBIAN_FRONTEND=noninteractive apt install gh postgresql -yq
-RUN DEBIAN_FRONTEND=noninteractive apt install bzip2 -yq
+RUN DEBIAN_FRONTEND=noninteractive apt install bzip2 nginx -yq
 RUN locale-gen en_US.UTF-8 
 COPY pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
 RUN chown postgres:postgres /etc/postgresql/14/main/pg_hba.conf
